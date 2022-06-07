@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="shortcut icon" href="#">
+
+    <script src="utils/pixi.min.js"></script>
+    <script src="utils/print.js"></script>
+    <script type="text/javascript" src="module/scene.js"></script>
+    <script type="text/javascript" src="module/obstacle.js"></script>
+    <script type="text/javascript" src="module/vector.js"></script>
+    <script type="text/javascript" src="module/particle.js"></script>
+    <script type="text/javascript" src="ParticleSystem/Smoker.js"></script>
+    <script type="text/javascript" src="ParticleSystem/Waterfall.js"></script>
+    <script type="text/javascript" src="ParticleSystem/Firework.js"></script>
+</head>
+
+<body>
+    <script>
+        // Create the application helper and add its render target to the page
+        const [width, height] = [1000, 720];
+        const app = new PIXI.Application({ width, height });
+        document.body.appendChild(app.view);
+
+        initializeScene(app);
+
+        let elapsed = 0.0;
+        app.ticker.add((delta) => {
+            elapsed += delta;
+            simulate(app, delta, elapsed);
+        });
+    </script>
+    <div>
+        <div id="num_particles">0</div>
+    </div>
+</body>
+
+</html>
