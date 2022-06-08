@@ -21,8 +21,8 @@ function simulate(app, delta, elapsed, type) {
         firework.show();
     }
 
-    // Smoker System
-    else if (type === 'smoker') {
+    // Rocket System
+    else if (type === 'rocket') {
         const { smoker } = stage;
         const directionSlider = document.getElementById("direction_slider");
         const dir = parseFloat(directionSlider.value)
@@ -75,8 +75,8 @@ function initializeScene(app, type, args) {
         stage.firework = firework;
     }
 
-    // Smoker System
-    else if (type === 'smoker') {
+    // Rocket System
+    else if (type === 'rocket') {
         const smoker = new Smoker(
             app.view,
             10,

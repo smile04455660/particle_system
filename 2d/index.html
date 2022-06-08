@@ -26,12 +26,12 @@
         <div id="canvas"></div>
 
         <!-- Scenes selector -->
-        <div>
+        <div style="margin-bottom: 8px; margin-top: 8px">
             <label for="scenes">Scene</label>
             <select name="scenes" id="scenes_selector">
                 <option value="firework">Firework</option>
                 <option value="waterfall">Waterfall</option>
-                <option value="smoker">Smoker</option>
+                <option value="rocket">Rocket</option>
             </select>
         </div>
 
@@ -88,6 +88,15 @@
         <script>
             let app;
             function setScene(type, args) {
+                for (const section of sections) {
+                    const div = document.getElementById(`${section}_section`);
+                    if (section === type) {
+                        div.style.display = "block";
+                    } else {
+                        div.style.display = "none";
+                    }
+                }
+
                 // Create the application helper and add its render target to the page
                 const [width, height] = [1000, 720];
                 app?.ticker.stop();
@@ -104,6 +113,7 @@
                 });
             }
 
+            const sections = ["firework", "waterfall", "rocket"];
             const selector = document.getElementById("scenes_selector");
             selector.addEventListener("change", (event) => {
                 const type = event.target.value;
@@ -115,7 +125,7 @@
                 setScene("waterfall", { random: true });
             });
 
-            const defaultSceneType = "smoker";
+            const defaultSceneType = "firework";
             setScene(defaultSceneType);
         </script>
     </body>
