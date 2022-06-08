@@ -83,11 +83,13 @@ function initializeObstacle(width, height, stage, random) {
     if (random) {
         for (let i = 0; i < 20; i++) {
             const margin = 100
-            const x = Math.min(Math.max(Math.round(Math.random() * width), margin), width - margin)
-            const y = Math.min(Math.max(Math.round(Math.random() * height), margin), height - margin)
+            // const x = Math.min(Math.max(Math.round(Math.random() * width), margin), width - margin)
+            const x = randomFromInterval(margin, width - margin)
+            // const y = Math.min(Math.max(Math.round(Math.random() * height), margin), height - margin)
+            const y = randomFromInterval(margin, height - margin)
             objArgs.push(
                 {
-                    x, y, radius: Math.max(10, Math.round(Math.random() * 25))
+                    x, y, radius: Math.max(10, Math.round(Math.random() * 20))
                 },
             )
         }

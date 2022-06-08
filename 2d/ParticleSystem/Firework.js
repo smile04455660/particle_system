@@ -46,7 +46,7 @@ class Firework extends PIXI.Container {
                 let explosionParticles;
                 if (!particle.isChild) {
                     explosionParticles = particle.explode(
-                        this.num_children,
+                        this.num_children + Math.random() * 20,
                         this.velocity * 0.3
                     );
                 }
