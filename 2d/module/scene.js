@@ -24,7 +24,18 @@ function simulate(app, delta, elapsed, type) {
     // Smoker System
     else if (type === 'smoker') {
         const { smoker } = stage;
-        smoker.update([new Vector(0.05, -0.1)]);
+        const directionSlider = document.getElementById("direction_slider");
+        const speedSlider = document.getElementById("speed_slider");
+        const speed = parseInt(speedSlider.value)
+        smoker.update({
+            accelerations: [
+                new Vector(
+                    parseFloat(directionSlider.value),
+                    Math.max(0.01 * speed, 0.15)
+                )
+            ],
+            num_particles: speed
+        });
         smoker.show();
     }
 }
@@ -64,7 +75,7 @@ function initializeScene(app, type, args) {
             app.view,
             10,
             2,
-            new Vector(width / 2, height / 2),
+            new Vector(width / 2, height / 2 + 25),
             500,
             { init_size: 20, end_size: 10, div_size: 30 }
         );

@@ -20,9 +20,18 @@ class Smoker extends PIXI.Container {
         this.end_size = end_size;
         this.div_size = div_size; // divergence
         this.particles = [];
+        this.rocket = new Rocket({
+            pos: new Vector([width / 2 - 100, height / 2 - 165]),
+            width: 200,
+            height: 200,
+        })
+        this.addChild(this.rocket);
     }
 
-    update(accelerations) {
+    update(args) {
+        const { accelerations, num_particles } = args;
+        if (num_particles)
+            this.num_particles = num_particles;
         for (let i = 0; i < this.num_particles; i++) {
             const particleProps = {
                 pos: this._generatePosDiff().add(this.pos),
