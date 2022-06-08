@@ -35,8 +35,6 @@ class Firework extends PIXI.Container {
             this.addChild(newParticle);
         }
 
-        console.log(this.particles.length);
-
         for (let i = this.particles.length - 1; i >= 0; i--) {
             const particle = this.particles[i];
 

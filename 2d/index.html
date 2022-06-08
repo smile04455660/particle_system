@@ -1,38 +1,69 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <link rel="shortcut icon" href="#" />
 
-<head>
-    <link rel="shortcut icon" href="#">
+        <script src="utils/pixi.min.js"></script>
+        <script src="utils/print.js"></script>
+        <script type="text/javascript" src="module/scene.js"></script>
+        <script type="text/javascript" src="module/obstacle.js"></script>
+        <script type="text/javascript" src="module/vector.js"></script>
+        <script type="text/javascript" src="module/particle.js"></script>
+        <script type="text/javascript" src="ParticleSystem/Smoker.js"></script>
+        <script
+            type="text/javascript"
+            src="ParticleSystem/Waterfall.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="ParticleSystem/Firework.js"
+        ></script>
+    </head>
 
-    <script src="utils/pixi.min.js"></script>
-    <script src="utils/print.js"></script>
-    <script type="text/javascript" src="module/scene.js"></script>
-    <script type="text/javascript" src="module/obstacle.js"></script>
-    <script type="text/javascript" src="module/vector.js"></script>
-    <script type="text/javascript" src="module/particle.js"></script>
-    <script type="text/javascript" src="ParticleSystem/Smoker.js"></script>
-    <script type="text/javascript" src="ParticleSystem/Waterfall.js"></script>
-    <script type="text/javascript" src="ParticleSystem/Firework.js"></script>
-</head>
+    <body>
+        <div id="canvas"></div>
+        <div>
+            <div id="num_particles">0</div>
+        </div>
 
-<body>
-    <script>
-        // Create the application helper and add its render target to the page
-        const [width, height] = [1000, 720];
-        const app = new PIXI.Application({ width, height });
-        document.body.appendChild(app.view);
+        <!-- Scenes selector -->
+        <div>
+            <label for="scenes">Scene</label>
+            <select name="scenes" id="scenes_selector">
+                <option value="firework">Firework</option>
+                <option value="waterfall">Waterfall</option>
+                <option value="smoke">Smoke</option>
+            </select>
+        </div>
 
-        initializeScene(app);
+        <!-- Main script -->
+        <script>
+            function setScene(type) {
+                // Create the application helper and add its render target to the page
+                const [width, height] = [1000, 720];
+                const app = new PIXI.Application({ width, height });
+                const canvas = document.getElementById("canvas");
+                canvas.innerHTML = "";
+                canvas.appendChild(app.view);
+                initializeScene(app, type);
 
-        let elapsed = 0.0;
-        app.ticker.add((delta) => {
-            elapsed += delta;
-            simulate(app, delta, elapsed);
-        });
-    </script>
-    <div>
-        <div id="num_particles">0</div>
-    </div>
-</body>
+                let elapsed = 0.0;
+                app.ticker.add((delta) => {
+                    elapsed += delta;
+                    simulate(app, delta, elapsed, type);
+                });
+            }
 
+            const selector = document.getElementById("scenes_selector");
+            if (selector) {
+                selector.addEventListener("change", (event) => {
+                    const type = event.target.value;
+                    setScene(type);
+                });
+            }
+
+            const defaultSceneType = "firework";
+            setScene(defaultSceneType);
+        </script>
+    </body>
 </html>

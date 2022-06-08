@@ -62,9 +62,6 @@ class Waterfall extends PIXI.Container {
                 this.particles.splice(i, 1);
             }
         }
-
-        let np = document.getElementById("num_particles");
-        np.innerText = this.particles.length;
     }
 
     show() {

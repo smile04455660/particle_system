@@ -70,7 +70,6 @@ class SmokeParticle extends Particle {
     }
 
     update() {
-        // console.log("ls, lsc:", this.lifespan, this.lifespan_change);
         this.lifespan--;
         const lifespan_portion = Math.max(
             this.lifespan / this.total_lifespan,
