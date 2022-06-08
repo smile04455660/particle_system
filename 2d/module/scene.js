@@ -26,7 +26,7 @@ function simulate(app, delta, elapsed, type) {
     // smoker.show();
 }
 
-function initializeScene(app, type) {
+function initializeScene(app, type, args) {
     const { stage } = app;
     const { width, height } = app.view;
 
@@ -37,7 +37,7 @@ function initializeScene(app, type) {
         let waterfall = new Waterfall(app.view, 50, 2000, stage.gravity);
         stage.addChild(waterfall);
         stage.waterfall = waterfall;
-        initializeObstacle(width, height, stage);
+        initializeObstacle(width, height, stage, args?.random);
     }
 
     // Firework System
@@ -68,10 +68,10 @@ function initializeScene(app, type) {
     // stage.smoker = smoker;
 }
 
-function initializeObstacle(width, height, stage) {
+function initializeObstacle(width, height, stage, random) {
     stage.obstacles = [];
 
-    const objArgs = [
+    const objArgs = random ? [] : [
         { x: width / 2, y: height / 3, radius: 20 },
         { x: (width / 3) * 2, y: height / 2, radius: 20 },
         { x: (width / 3) * 1, y: height / 2, radius: 20 },
@@ -79,16 +79,19 @@ function initializeObstacle(width, height, stage) {
         { x: (width / 4) * 2, y: 2 * height / 3, radius: 20 },
         { x: (width / 4) * 3, y: 2 * height / 3, radius: 20 },
     ];
-    // for (let i = 0; i < 20; i++) {
-    //     const margin = 80
-    //     const x = Math.min(Math.max(Math.round(Math.random() * width), margin), width - margin)
-    //     const y = Math.min(Math.max(Math.round(Math.random() * height), margin), height - margin)
-    //     objArgs.push(
-    //         {
-    //             x, y, radius: 20
-    //         },
-    //     )
-    // }
+
+    if (random) {
+        for (let i = 0; i < 20; i++) {
+            const margin = 100
+            const x = Math.min(Math.max(Math.round(Math.random() * width), margin), width - margin)
+            const y = Math.min(Math.max(Math.round(Math.random() * height), margin), height - margin)
+            objArgs.push(
+                {
+                    x, y, radius: Math.max(10, Math.round(Math.random() * 25))
+                },
+            )
+        }
+    }
 
     for (const objArg of objArgs) {
         const circleObstacle = generateCircleObstacle(objArg);

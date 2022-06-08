@@ -33,7 +33,7 @@
             </select>
         </div>
 
-        <div>
+        <div id="firework_section">
             <label for="gravity">Gravity</label>
             <input
                 type="range"
@@ -54,18 +54,47 @@
                 step="0.1"
                 id="radius_slider"
             />
+
+            <button id="obstacle_button">Random obstacles</button>
+        </div>
+
+        <div id="waterfall_section">
+            <label for="gravity">Gravity</label>
+            <input
+                type="range"
+                min="0.0005"
+                max="0.25"
+                value="0.10"
+                step="0.001"
+                class="slider"
+                id="gravity_slider"
+            />
+
+            <label for="radius">Radius</label>
+            <input
+                type="range"
+                min="1"
+                max="5"
+                value="2.5"
+                step="0.1"
+                id="radius_slider"
+            />
+
+            <button id="obstacle_button">Random obstacles</button>
         </div>
 
         <!-- Main script -->
         <script>
-            function setScene(type) {
+            let app;
+            function setScene(type, args) {
                 // Create the application helper and add its render target to the page
                 const [width, height] = [1000, 720];
-                const app = new PIXI.Application({ width, height });
+                app?.ticker.stop();
+                app = new PIXI.Application({ width, height });
                 const canvas = document.getElementById("canvas");
                 canvas.innerHTML = "";
                 canvas.appendChild(app.view);
-                initializeScene(app, type);
+                initializeScene(app, type, args);
 
                 let elapsed = 0.0;
                 app.ticker.add((delta) => {
@@ -75,14 +104,17 @@
             }
 
             const selector = document.getElementById("scenes_selector");
-            if (selector) {
-                selector.addEventListener("change", (event) => {
-                    const type = event.target.value;
-                    setScene(type);
-                });
-            }
+            selector.addEventListener("change", (event) => {
+                const type = event.target.value;
+                setScene(type);
+            });
 
-            const defaultSceneType = "waterfall";
+            const obastacleButton = document.getElementById("obstacle_button");
+            obastacleButton.addEventListener("click", (event) => {
+                setScene("waterfall", { random: true });
+            });
+
+            const defaultSceneType = "firework";
             setScene(defaultSceneType);
         </script>
     </body>
