@@ -12,7 +12,7 @@ class Waterfall extends PIXI.Container {
         this.view_height = height;
 
         this.particleProps = {
-            radius: 3,
+            radius: 2,
         };
 
         for (let i = 0; i < this.init_particles; i++) {
@@ -23,7 +23,10 @@ class Waterfall extends PIXI.Container {
         }
     }
 
-    update(obstacles) {
+    update(args) {
+        const { obstacles, radius, gravity } = args
+        this.gravity = gravity
+        this.particleProps.radius = radius
         if (this.particles.length < this.max_particles) {
             for (
                 let i = 0;

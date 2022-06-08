@@ -22,9 +22,6 @@
 
     <body>
         <div id="canvas"></div>
-        <div>
-            <div id="num_particles">0</div>
-        </div>
 
         <!-- Scenes selector -->
         <div>
@@ -34,6 +31,29 @@
                 <option value="waterfall">Waterfall</option>
                 <option value="smoke">Smoke</option>
             </select>
+        </div>
+
+        <div>
+            <label for="gravity">Gravity</label>
+            <input
+                type="range"
+                min="0.0005"
+                max="0.25"
+                value="0.10"
+                step="0.001"
+                class="slider"
+                id="gravity_slider"
+            />
+
+            <label for="radius">Radius</label>
+            <input
+                type="range"
+                min="1"
+                max="5"
+                value="2.5"
+                step="0.1"
+                id="radius_slider"
+            />
         </div>
 
         <!-- Main script -->
@@ -62,7 +82,7 @@
                 });
             }
 
-            const defaultSceneType = "firework";
+            const defaultSceneType = "waterfall";
             setScene(defaultSceneType);
         </script>
     </body>

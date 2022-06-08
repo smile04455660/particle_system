@@ -5,7 +5,13 @@ function simulate(app, delta, elapsed, type) {
     // Waterfall System
     if (type === 'waterfall') {
         const { waterfall } = stage;
-        waterfall.update(stage.obstacles);
+        const radiusSlider = document.getElementById("radius_slider");
+        const gravitySlider = document.getElementById("gravity_slider");
+        waterfall.update({
+            obstacles: stage.obstacles,
+            radius: parseFloat(radiusSlider.value),
+            gravity: new Vector(0, parseFloat(gravitySlider.value))
+        });
         waterfall.show();
     }
     // Firework System
@@ -73,6 +79,16 @@ function initializeObstacle(width, height, stage) {
         { x: (width / 4) * 2, y: 2 * height / 3, radius: 20 },
         { x: (width / 4) * 3, y: 2 * height / 3, radius: 20 },
     ];
+    // for (let i = 0; i < 20; i++) {
+    //     const margin = 80
+    //     const x = Math.min(Math.max(Math.round(Math.random() * width), margin), width - margin)
+    //     const y = Math.min(Math.max(Math.round(Math.random() * height), margin), height - margin)
+    //     objArgs.push(
+    //         {
+    //             x, y, radius: 20
+    //         },
+    //     )
+    // }
 
     for (const objArg of objArgs) {
         const circleObstacle = generateCircleObstacle(objArg);
