@@ -33,7 +33,7 @@ class Smoker extends PIXI.Container {
                 lifespan: this.lifespan,
             };
             const particle = new SmokeParticle(particleProps);
-            particle.tint = 0x3f0909;
+            particle.tint = 0xe25822;
             // particle.tint = Array(3)
             //     .fill(0)
             //     .map(() => Math.floor(Math.random() * 256))
@@ -74,5 +74,7 @@ class Smoker extends PIXI.Container {
         return this._generateRandom2dVector().multiply(this.velocity);
     }
 
-    show() {}
+    show() {
+        this.particles.forEach((particle) => particle.show());
+    }
 }

@@ -21,16 +21,19 @@ function simulate(app, delta, elapsed, type) {
         firework.show();
     }
 
-    // const { smoker } = stage;
-    // smoker.update([new Vector(0.05, -0.1)]);
-    // smoker.show();
+    // Smoker System
+    else if (type === 'smoker') {
+        const { smoker } = stage;
+        smoker.update([new Vector(0.05, -0.1)]);
+        smoker.show();
+    }
 }
 
 function initializeScene(app, type, args) {
     const { stage } = app;
     const { width, height } = app.view;
 
-    stage.gravity = new Vector(0, 0.11);
+    stage.gravity = new Vector(0, 0.125);
 
     // Waterfall System
     if (type === 'waterfall') {
@@ -56,16 +59,18 @@ function initializeScene(app, type, args) {
     }
 
     // Smoker System
-    // const smoker = new Smoker(
-    //     app.view,
-    //     10,
-    //     2,
-    //     new Vector(width / 2, height / 2),
-    //     { lifespan: 500, life_decay: 5 },
-    //     { init_size: 20, end_size: 10, div_size: 30 }
-    // );
-    // stage.addChild(smoker);
-    // stage.smoker = smoker;
+    else if (type === 'smoker') {
+        const smoker = new Smoker(
+            app.view,
+            10,
+            2,
+            new Vector(width / 2, height / 2),
+            500,
+            { init_size: 20, end_size: 10, div_size: 30 }
+        );
+        stage.addChild(smoker);
+        stage.smoker = smoker;
+    }
 }
 
 function initializeObstacle(width, height, stage, random) {
