@@ -25,16 +25,23 @@ function simulate(app, delta, elapsed, type) {
     else if (type === 'smoker') {
         const { smoker } = stage;
         const directionSlider = document.getElementById("direction_slider");
+        const dir = parseFloat(directionSlider.value)
         const speedSlider = document.getElementById("speed_slider");
         const speed = parseInt(speedSlider.value)
+        speedSlider.value -= 0.05
         smoker.update({
             accelerations: [
                 new Vector(
-                    parseFloat(directionSlider.value),
-                    Math.max(0.01 * speed, 0.15)
+                    dir,
+                    0.01 * speed
+                ),
+                new Vector(
+                    0,
+                    0.15,
                 )
             ],
-            num_particles: speed
+            num_particles: speed,
+            rotation: -dir * 4,
         });
         smoker.show();
     }
