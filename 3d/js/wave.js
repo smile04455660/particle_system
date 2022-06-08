@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { SkeletonHelper } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export { WaveSystem };
@@ -26,17 +27,19 @@ class WaveSystem {
             45,
             window.innerWidth / window.innerHeight,
             0.1,
-            1000
+            2000
         );
-        camera.position.set(0, 0, 10);
-        camera.lookAt(scene.position);
+
+        camera.position.set(70, 40, -10);
+        const cameraControl = new OrbitControls(camera, renderer.domElement);
+        cameraControl.target = new THREE.Vector3(0, 0, -40);
+        cameraControl.update();
 
         window.addEventListener("resize", function () {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
-        const cameraControl = new OrbitControls(camera, renderer.domElement);
 
         return { scene, renderer, camera };
     }
@@ -45,80 +48,115 @@ class WaveSystem {
         return n > 0 ? Math.floor(n) : Math.ceil(n);
     }
 
+    _linspace(x1, x2, n) {
+        if (n === undefined) n = 100;
+        if (n < 2) throw new Error("n must an integer greater than 1");
+        const diff = (x2 - x1) / (n - 1);
+        return Array(n)
+            .fill(0)
+            .map((v, i) => i * diff + x1);
+    }
+
+    _zeros(m, n) {
+        let isValid = (v) => v !== undefined && Number.isInteger(v);
+        if (!isValid(m) || !isValid(n)) throw new Error("input not valid");
+        return Array(m).fill(Array(n).fill(0));
+    }
+
     createPoints(scene) {
         this.t = 0;
-        this.Lx = 10;
-        this.Lz = 10;
-        this.dx = 0.1;
-        this.dz = this.dx;
-        this.nx = this._fix(this.Lx/this.dx);
-        this.nz = this._fix(this.Lz/this.dz);
+        this.Lx = 100;
+        this.Lz = 100;
+        this.dx = 1;
+        this.dz = 1;
+        this.nx = this._fix(this.Lx / this.dx);
+        this.nz = this._fix(this.Lz / this.dz);
+        this.x = this._linspace(0, this.Lx, this.nx);
+        this.z = this._linspace(0, this.Lz, this.nz);
 
-        const posRange = 500;
+        this.wn = this._zeros(this.nx, this.nz);
+        this.wnm1 = this._zeros(this.nx, this.nz);
+        this.wnp1 = this._zeros(this.nx, this.nz);
+
+        this.CFL = 0.5;
+        this.c = 1;
+        this.dt = (this.CFL * this.dx) / this.c;
+
         const vertices = [];
-        const speed = [];
-        for (let i = 0; i < particleCount; i++) {
-            const x = THREE.MathUtils.randFloatSpread(posRange);
-            const y = THREE.MathUtils.randFloatSpread(posRange);
-            const z = THREE.MathUtils.randFloatSpread(posRange);
-            const vx = THREE.MathUtils.randFloatSpread(0.16);
-            const vy = -THREE.MathUtils.randFloat(0.1, 0.3);
-            const vz = THREE.MathUtils.randFloatSpread(0.32);
-            vertices.push(x, y, z);
-            speed.push(vx, vy, vz);
+        const z_start = -this.nz * this.dz;
+        const y = 0;
+        for (let j = 0; j < this.nz; j++) {
+            const x_start = (-this.nx / 2 + 0.5) * this.dx;
+            const z = z_start + j * this.dz;
+            for (let i = 0; i < this.nx; i++) {
+                if (j === 0 ||j === this.nz - 1 || i === 0 || i === this.nx - 1)
+                    continue;
+                const x = x_start + i * this.dx;
+                vertices.push(x, y, z);
+            }
         }
+
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
             "position",
             new THREE.BufferAttribute(new Float32Array(vertices), 3)
         );
-        geometry.setAttribute(
-            "speed",
-            new THREE.BufferAttribute(new Float32Array(speed), 3)
-        );
-        const texture = new THREE.TextureLoader().load("assets/snowflake.png");
+        const texture = new THREE.TextureLoader().load("assets/dot.png");
         const material = new THREE.PointsMaterial({
-            size: 3,
+            size: 2.5,
             map: texture,
-            blending: THREE.AdditiveBlending,
             depthTest: true,
-            transparent: true,
-            opacity: 0.7,
+            alphaTest: true,
             sizeAttenuation: true,
         });
         const points = new THREE.Points(geometry, material);
         scene.add(points);
     }
 
+    _copy(dest, sour) {
+        for (let i = 0; i < dest.length; i++) {
+            for (let j = 0; j < dest[0].length; j++) {
+                dest[i][j] = sour[i][j];
+            }
+        }
+    }
+
     pointsUpdate(points) {
         const { geometry } = points;
         const { attributes } = geometry;
-        const { position, speed } = attributes;
-        for (let i = 0; i < position.array.length; i += 3) {
-            let x = position.array[i];
-            let y = position.array[i + 1];
-            let z = position.array[i + 2];
+        const { position } = attributes;
 
-            let vx = speed.array[i];
-            let vy = speed.array[i + 1];
-            let vz = speed.array[i + 2];
+        this.t += this.dt;
 
-            x = x + vx;
-            y = y + vy;
-            z = z + vz;
+        // save
+        this._copy(this.wnm1, this.wn);
+        this._copy(this.wn, this.wnp1);
 
-            if (y <= -250) y = 250;
-            if ((x <= -250 && vx < 0) || (x >= 250 && vx >= 0)) vx = vx * -1;
-            if ((z <= -250 && vz < 0) || (z >= 250 && vz >= 0)) vz = vz * -1;
+        // source, nx and nz have to be even
+        this.wn[this.nx / 2][this.nz / 2] =
+            this.dt ** 2 * 20 * Math.sin((30 * Math.PI * this.t) / 1000);
 
-            position.array[i] = x;
-            position.array[i + 1] = y;
-            position.array[i + 2] = z;
-            speed.array[i] = vx;
-            speed.array[i + 2] = vz;
+        let ind = 0;
+        for (let j = 0; j < this.nz; j++) {
+            for (let i = 0; i < this.nx; i++) {
+                if (j === 0 ||j === this.nz - 1 || i === 0 || i === this.nx - 1)
+                    continue;
+                ind += 3;
+                this.wnp1[i][j] =
+                    2 * this.wn[i][j] -
+                    this.wnm1[i][j] +
+                    this.CFL ** 2 *
+                        (this.wn[i + 1][j] +
+                            this.wn[i][j + 1] -
+                            4 * this.wn[i][j] +
+                            this.wn[i - 1][j] +
+                            this.wn[i][j - 1]);
+
+                position.array[ind + 1] = this.wn[i][j];
+            }
         }
+
         position.needsUpdate = true;
-        speed.needsUpdate = true;
     }
 
     animate(scene, camera, renderer) {
@@ -133,4 +171,10 @@ class WaveSystem {
     run() {
         this.animate(this.scene, this.camera, this.renderer);
     }
+}
+
+function sleep(ms) {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, ms);
+    });
 }
