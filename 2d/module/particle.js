@@ -131,3 +131,18 @@ class FireworkParticle extends Particle {
         }
     }
 }
+
+class StarParticle extends Particle {
+    constructor(args) {
+        args.texture = PIXI.Texture.from("assets/blue_circle.png");
+        super(args);
+    }
+
+    applySpeed(vec) {
+        this.speed = vec;
+    }
+
+    isDead() {
+        return false;
+    }
+}

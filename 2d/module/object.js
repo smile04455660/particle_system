@@ -7,5 +7,6 @@ class Rocket extends PIXI.Sprite {
         [this.x, this.y] = this.pos.a.map((e) => Math.round(e));
         this.anchor.x = 0.5;
         this.anchor.y = 1;
+        this.zIndex = 10;
     }
 }
