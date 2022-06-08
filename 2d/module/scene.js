@@ -28,11 +28,10 @@ function simulate(app, delta, elapsed, type) {
         const dir = parseFloat(directionSlider.value)
         const speedSlider = document.getElementById("speed_slider");
         const speed = parseInt(speedSlider.value)
-        speedSlider.value -= 0.05
         smoker.update({
             accelerations: [
                 new Vector(
-                    dir,
+                    -dir,
                     0.01 * speed
                 ),
                 new Vector(
@@ -41,7 +40,7 @@ function simulate(app, delta, elapsed, type) {
                 )
             ],
             num_particles: speed,
-            rotation: -dir * 4,
+            rotation: dir * 4,
         });
         smoker.show();
     }
@@ -86,6 +85,23 @@ function initializeScene(app, type, args) {
             500,
             { init_size: 20, end_size: 10, div_size: 30 }
         );
+        document.addEventListener('keydown', (event) => {
+            const key = event.key
+            const directionSlider = document.getElementById("direction_slider");
+            const speedSlider = document.getElementById("speed_slider");
+            if (key === 'a') {
+                directionSlider.value = (parseFloat(directionSlider.value) - 0.003).toString();
+            }
+            if (key === 'd') {
+                directionSlider.value = (parseFloat(directionSlider.value) + 0.003).toString();
+            }
+            if (key === 'w') {
+                speedSlider.value = (parseFloat(speedSlider.value) + 0.5).toString();
+            }
+            if (key === 's') {
+                speedSlider.value = (parseFloat(speedSlider.value) - 0.5).toString();
+            }
+        })
         stage.addChild(smoker);
         stage.smoker = smoker;
     }
