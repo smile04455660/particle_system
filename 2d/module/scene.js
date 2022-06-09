@@ -6,13 +6,13 @@ function simulate(app, delta, elapsed) {
     // waterfall.update(stage.obstacles);
     // waterfall.show();
 
-    // const { smoker } = stage;
-    // smoker.update([new Vector(0.05, -0.1)]);
-    // smoker.show();
+    const { smoker } = stage;
+    smoker.update([new Vector(0, -0.2)]);
+    smoker.show();
 
-    const { firework } = stage;
-    firework.update([gravity]);
-    firework.show();
+    // const { firework } = stage;
+    // firework.update([gravity]);
+    // firework.show();
 }
 
 function initializeScene(app) {
@@ -22,34 +22,34 @@ function initializeScene(app) {
     stage.gravity = new Vector(0, 0.11);
 
     // Waterfall System
-    let waterfall = new Waterfall(app.view, 50, 5000, stage.gravity);
+    // let waterfall = new Waterfall(app.view, 50, 5000, stage.gravity);
     // stage.addChild(waterfall);
-    stage.waterfall = waterfall;
+    // stage.waterfall = waterfall;
 
-    // Smoker System
+    //Smoker System
     const smoker = new Smoker(
         app.view,
-        10,
+        30,
         2,
         new Vector(width / 2, height / 2),
-        { lifespan: 500, life_decay: 5 },
+        100,
         { init_size: 20, end_size: 10, div_size: 30 }
     );
-    // stage.addChild(smoker);
+    stage.addChild(smoker);
     stage.smoker = smoker;
 
     // Firework System
-    const firework = new Firework(
-        app.view,
-        0.05,
-        150,
-        13,
-        new Vector(width / 2, height),
-        3,
-        80,
-    );
-    stage.addChild(firework);
-    stage.firework = firework;
+    // const firework = new Firework(
+    //     app.view,
+    //     0.05,
+    //     150,
+    //     13,
+    //     new Vector(width / 2, height),
+    //     3,
+    //     80,
+    // );
+    // stage.addChild(firework);
+    // stage.firework = firework;
 
     // initializeObstacle(width, height, stage);
 }
