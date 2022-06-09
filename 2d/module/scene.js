@@ -53,36 +53,6 @@ function initializeScene(app, type, args) {
     stage.gravity = new Vector(0, 0.125);
 
     // Waterfall System
-<<<<<<< HEAD
-    // let waterfall = new Waterfall(app.view, 50, 5000, stage.gravity);
-    // stage.addChild(waterfall);
-    // stage.waterfall = waterfall;
-
-    //Smoker System
-    const smoker = new Smoker(
-        app.view,
-        30,
-        2,
-        new Vector(width / 2, height / 2),
-        100,
-        { init_size: 20, end_size: 10, div_size: 30 }
-    );
-    stage.addChild(smoker);
-    stage.smoker = smoker;
-
-    // Firework System
-    // const firework = new Firework(
-    //     app.view,
-    //     0.05,
-    //     150,
-    //     13,
-    //     new Vector(width / 2, height),
-    //     3,
-    //     80,
-    // );
-    // stage.addChild(firework);
-    // stage.firework = firework;
-=======
     if (type === 'waterfall') {
         let waterfall = new Waterfall(app.view, 50, 2000, stage.gravity);
         stage.addChild(waterfall);
@@ -104,7 +74,6 @@ function initializeScene(app, type, args) {
         stage.addChild(firework);
         stage.firework = firework;
     }
->>>>>>> 8f72dc78580af6a320475c49e01f44f74fb538dd
 
     // Rocket System
     else if (type === 'rocket') {
