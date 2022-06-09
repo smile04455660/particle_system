@@ -2,7 +2,7 @@ class Obstacle extends PIXI.Graphics {
     constructor() {
         super();
     }
-    collide(particle) {}
+    collide(particle) { }
 }
 
 class CircleObstacle extends Obstacle {
@@ -32,7 +32,6 @@ class CircleObstacle extends Obstacle {
         return Vector.distance(this.pos, particle.pos);
     }
 }
-
 
 function generateCircleObstacle(args) {
     const { x, y, radius } = args;

@@ -1,38 +1,132 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <link rel="shortcut icon" href="#" />
 
-<head>
-    <link rel="shortcut icon" href="#">
+        <script src="utils/pixi.min.js"></script>
+        <script src="utils/print.js"></script>
+        <script src="utils/random.js"></script>
+        <script type="text/javascript" src="module/scene.js"></script>
+        <script type="text/javascript" src="module/obstacle.js"></script>
+        <script type="text/javascript" src="module/vector.js"></script>
+        <script type="text/javascript" src="module/particle.js"></script>
+        <script type="text/javascript" src="module/object.js"></script>
+        <script type="text/javascript" src="ParticleSystem/Smoker.js"></script>
+        <script
+            type="text/javascript"
+            src="ParticleSystem/Waterfall.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="ParticleSystem/Firework.js"
+        ></script>
+    </head>
 
-    <script src="utils/pixi.min.js"></script>
-    <script src="utils/print.js"></script>
-    <script type="text/javascript" src="module/scene.js"></script>
-    <script type="text/javascript" src="module/obstacle.js"></script>
-    <script type="text/javascript" src="module/vector.js"></script>
-    <script type="text/javascript" src="module/particle.js"></script>
-    <script type="text/javascript" src="ParticleSystem/Smoker.js"></script>
-    <script type="text/javascript" src="ParticleSystem/Waterfall.js"></script>
-    <script type="text/javascript" src="ParticleSystem/Firework.js"></script>
-</head>
+    <body>
+        <div id="canvas"></div>
 
-<body>
-    <script>
-        // Create the application helper and add its render target to the page
-        const [width, height] = [1000, 720];
-        const app = new PIXI.Application({ width, height });
-        document.body.appendChild(app.view);
+        <!-- Scenes selector -->
+        <div style="margin-bottom: 8px; margin-top: 8px">
+            <label for="scenes">Scene</label>
+            <select name="scenes" id="scenes_selector">
+                <option value="firework">Firework</option>
+                <option value="waterfall">Waterfall</option>
+                <option value="rocket">Rocket</option>
+            </select>
+        </div>
 
-        initializeScene(app);
+        <div id="firework_section"></div>
 
-        let elapsed = 0.0;
-        app.ticker.add((delta) => {
-            elapsed += delta;
-            simulate(app, delta, elapsed);
-        });
-    </script>
-    <div>
-        <div id="num_particles">0</div>
-    </div>
-</body>
+        <div id="waterfall_section">
+            <label for="gravity">Gravity</label>
+            <input
+                type="range"
+                min="0.0005"
+                max="0.25"
+                value="0.10"
+                step="0.001"
+                class="slider"
+                id="gravity_slider"
+            />
 
+            <label for="radius">Radius</label>
+            <input
+                type="range"
+                min="1"
+                max="5"
+                value="3"
+                step="0.1"
+                id="radius_slider"
+            />
+
+            <button id="obstacle_button">Random obstacles</button>
+        </div>
+
+        <div id="rocket_section">
+            <label for="direction">Direction</label>
+            <input
+                type="range"
+                min="-0.08"
+                max="0.08"
+                value="0"
+                step="0.001"
+                id="direction_slider"
+            />
+
+            <label for="speed">Speed</label>
+            <input
+                type="range"
+                min="1.5"
+                max="25"
+                value="5"
+                step="0.05"
+                id="speed_slider"
+            />
+        </div>
+
+        <!-- Main script -->
+        <script>
+            let app;
+            function setScene(type, args) {
+                for (const section of sections) {
+                    const div = document.getElementById(`${section}_section`);
+                    if (section === type) {
+                        div.style.display = "block";
+                    } else {
+                        div.style.display = "none";
+                    }
+                }
+
+                // Create the application helper and add its render target to the page
+                const [width, height] = [1000, 720];
+                app?.ticker.stop();
+                app = new PIXI.Application({ width, height });
+                const canvas = document.getElementById("canvas");
+                canvas.innerHTML = "";
+                canvas.appendChild(app.view);
+                initializeScene(app, type, args);
+
+                let elapsed = 0.0;
+                app.ticker.add((delta) => {
+                    elapsed += delta;
+                    simulate(app, delta, elapsed, type);
+                });
+            }
+
+            const sections = ["firework", "waterfall", "rocket"];
+            const selector = document.getElementById("scenes_selector");
+            selector.addEventListener("change", (event) => {
+                const type = event.target.value;
+                setScene(type);
+            });
+
+            const obastacleButton = document.getElementById("obstacle_button");
+            obastacleButton.addEventListener("click", (event) => {
+                setScene("waterfall", { random: true });
+            });
+
+            const defaultSceneType = "firework";
+            setScene(defaultSceneType);
+        </script>
+    </body>
 </html>

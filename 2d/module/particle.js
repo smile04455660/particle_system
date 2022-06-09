@@ -33,7 +33,7 @@ class Particle extends PIXI.Sprite {
         this.speed = new_speed;
     }
 
-    show() {}
+    show() { }
 
     isInView(width, height) {
         return this.x >= 0 && this.y >= 0 && this.x < width && this.y < height;
@@ -70,7 +70,6 @@ class SmokeParticle extends Particle {
     }
 
     update() {
-        // console.log("ls, lsc:", this.lifespan, this.lifespan_change);
         this.lifespan--;
         const lifespan_portion = Math.max(
             this.lifespan / this.total_lifespan,
@@ -110,7 +109,7 @@ class FireworkParticle extends Particle {
             child.pos = Vector.fromPolar(angle, length).add(this.pos);
             child.speed = this._genExplodeSpeed(angle, explode_velocity);
             child.tint = this.tint;
-            child.lifespan = this.total_lifespan * 0.65;
+            child.lifespan = this.total_lifespan * randomFromInterval(0.2, 0.7);
             children.push(child);
         }
         return children;
@@ -123,12 +122,27 @@ class FireworkParticle extends Particle {
     }
 
     _genExplodeSpeed(angle, velocity) {
-        return Vector.fromPolar(angle, Math.random()*velocity);
+        return Vector.fromPolar(angle, Math.random() * velocity);
     }
 
     show() {
         if (this.isChild) {
             this.alpha = this.lifespan / this.total_lifespan;
         }
+    }
+}
+
+class StarParticle extends Particle {
+    constructor(args) {
+        args.texture = PIXI.Texture.from("assets/blue_circle.png");
+        super(args);
+    }
+
+    applySpeed(vec) {
+        this.speed = vec;
+    }
+
+    isDead() {
+        return false;
     }
 }
